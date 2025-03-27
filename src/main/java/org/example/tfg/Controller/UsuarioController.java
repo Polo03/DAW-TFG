@@ -1,6 +1,7 @@
 package org.example.tfg.Controller;
 
 import jakarta.validation.Valid;
+import org.example.tfg.Dto.LoginRequest;
 import org.example.tfg.Dto.Usuario;
 import org.example.tfg.Service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/usuarios")
 @CacheConfig(cacheNames = {"usuarios"})
 public class UsuarioController {
@@ -77,12 +79,40 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> validarLogin(@RequestBody @Valid Usuario usuario){
-        System.out.println(usuario);
-        if(usuarioService.validarLogin(usuario))
-            return ResponseEntity.ok("Usuario logueado");
-        else
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuario no logueado");
+    public ResponseEntity<?> validarLogin(@RequestBody @Valid LoginRequest loginRequest) {
+        // Crear usuario con la información recibida
+        Usuario usuario = new Usuario();
+        usuario.setNickname(loginRequest.getNickname());
+        usuario.setPassword(loginRequest.getPassword());
+
+        // Validar las credenciales
+        if (usuarioService.validarLogin(usuario)) {
+            // Crear respuesta en formato JSON
+            ResponseMessage responseMessage = new ResponseMessage("Usuario logueado");
+            return ResponseEntity.ok(responseMessage);
+        } else {
+            // En caso de fallo, respuesta con error en formato JSON
+            ResponseMessage responseMessage = new ResponseMessage("Usuario no logueado");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseMessage);
+        }
+    }
+
+    // Clase interna para el mensaje de respuesta
+    public static class ResponseMessage {
+        private String message;
+
+        public ResponseMessage(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
     }
 
 }
+

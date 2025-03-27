@@ -14,7 +14,7 @@ public class Usuario {
     private Integer id;
 
     @Size(max = 100)
-    @NotNull
+    @NotNull(message = "No puede ser nulo el nombre")
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
@@ -123,4 +123,18 @@ public class Usuario {
         this.premium = premium;
     }
 
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", apellidos='" + apellidos + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", password='" + password + '\'' +
+                ", numTelefono=" + numTelefono +
+                ", email='" + email + '\'' +
+                ", direccion='" + direccion + '\'' +
+                ", premium=" + premium +
+                '}';
+    }
 }
