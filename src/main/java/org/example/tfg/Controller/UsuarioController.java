@@ -1,6 +1,7 @@
 package org.example.tfg.Controller;
 
 import jakarta.validation.Valid;
+import org.example.tfg.Dto.LoginRequest;
 import org.example.tfg.Dto.Usuario;
 import org.example.tfg.Service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,17 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
+    public ResponseEntity<String> validarLogin(@RequestBody @Valid LoginRequest loginRequest) {
+        Usuario usuario = new Usuario();
+        usuario.setNickname(loginRequest.getNickname());
+        usuario.setPassword(loginRequest.getPassword());
+
+        if(usuarioService.validarLogin(usuario)) {
+            return ResponseEntity.ok("Usuario logueado");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuario no logueado");
+        }
     }
+
 
 }
