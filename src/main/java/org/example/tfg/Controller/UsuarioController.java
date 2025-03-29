@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/usuarios")
 @CacheConfig(cacheNames = {"usuarios"})
 public class UsuarioController {
@@ -77,12 +78,6 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> validarLogin(@RequestBody @Valid Usuario usuario){
-        System.out.println(usuario);
-        if(usuarioService.validarLogin(usuario))
-            return ResponseEntity.ok("Usuario logueado");
-        else
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuario no logueado");
     }
 
 }

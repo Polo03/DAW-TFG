@@ -14,7 +14,7 @@ public class Usuario {
     private Integer id;
 
     @Size(max = 100)
-    @NotNull
+    @NotNull(message = "No puede ser nulo el nombre")
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
