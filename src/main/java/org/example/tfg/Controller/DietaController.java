@@ -66,19 +66,19 @@ public class DietaController {
         if (actualizado) {
             return ResponseEntity.ok("Dieta actualizado con éxito");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Dieta no encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Dieta no encontrada");
         }
     }
 
     //Eliminar un dieta por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarUsuario(@PathVariable int id) {
+    public ResponseEntity<String> eliminarDieta(@PathVariable int id) {
         boolean eliminado = dietaService.eliminarDieta(id);
 
         if (eliminado) {
-            return ResponseEntity.ok("Usuario eliminado con éxito");
+            return ResponseEntity.ok("Dieta eliminado con éxito");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Dieta no encontrada");
         }
     }
 
