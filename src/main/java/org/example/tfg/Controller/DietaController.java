@@ -83,7 +83,7 @@ public class DietaController {
     }
 
     @GetMapping("/getDietaByIdUser/{idUsuario}")
-    public ResponseEntity<List<Dieta>> validarLogin(@PathVariable int idUsuario) {
+    public ResponseEntity<List<Dieta>> dameDietaPorIdUsuario(@PathVariable int idUsuario) {
         // Obtener el día de la semana en español
         String diaSemana = LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
         // Capitalizar la primera letra
