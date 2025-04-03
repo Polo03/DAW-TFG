@@ -27,6 +27,9 @@ public class DietaController {
     @Autowired
     private DietaService dietaService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     // Obtener todas las dietas
     @GetMapping
     public ResponseEntity<List<Dieta>> obtenerTodasDietas() {
@@ -83,12 +86,17 @@ public class DietaController {
     }
 
     @GetMapping("/getDietaByIdUser/{idUsuario}")
-    public ResponseEntity<List<Dieta>> dameDietaPorIdUsuario(@PathVariable int idUsuario) {
+    public ResponseEntity<?> dameDietaPorIdUsuario(@PathVariable int idUsuario) {
         // Obtener el día de la semana en español
         String diaSemana = LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
         // Capitalizar la primera letra
         diaSemana = diaSemana.substring(0, 1).toUpperCase() + diaSemana.substring(1);
-        List<Dieta> dietas = dietaService.getAllDietasByIdUsuario(idUsuario, diaSemana);
-        return ResponseEntity.ok(dietas);
+
+        if(usuarioService.obtenerUsuarioByID(idUsuario).isPresent())
+            return ResponseEntity.ok(dietaService.getAllDietasByIdUsuario(idUsuario, diaSemana));
+        else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encuentra el usuario");
+
+
     }
 }
