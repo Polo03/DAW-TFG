@@ -9,10 +9,14 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -23,53 +27,56 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // Obtener todos los usuarios
-    @GetMapping
-    public ResponseEntity<List<Usuario>> obtenerTodosUsuarios() {
-        List<Usuario> usuarios = usuarioService.obtenerTodosUsuarios();
-        return new ResponseEntity<>(usuarios, HttpStatus.OK);
+    @GetMapping()
+    public List<Usuario> getAllUsers() throws ExecutionException, InterruptedException {
+        return usuarioService.getAllUsers();
     }
 
-    //Obtener usuario por ID
     @GetMapping("/{id}")
-    @Cacheable
-    public ResponseEntity<Optional<Usuario>> obtenerUsuarioPorId(@PathVariable Integer id) {
-        try{
-            Thread.sleep(3000);
-            Optional<Usuario> usuario = usuarioService.obtenerUsuarioByID(id);
-            return new ResponseEntity<>(usuario, HttpStatus.OK);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
+    @Cacheable(value = "usuarios", key = "#id")
+    public Usuario getUserById(@PathVariable String id) throws ExecutionException, InterruptedException {
+        return usuarioService.getUserById(id);
     }
 
-    // Crear usuario
     @PostMapping
-    public ResponseEntity<String> guardarUsuario(@RequestBody @Valid Usuario usuario) {
-        Usuario clienteGuardar = usuarioService.guardarUsuario(usuario);
-        if (clienteGuardar != null) {
-            return ResponseEntity.ok("Usuario guardado con éxito");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no guardado");
+    public ResponseEntity<?> addUsuario(@Valid @RequestBody Usuario usuario, BindingResult result) throws ExecutionException, InterruptedException {
+        Map<String, String> errores = new HashMap<>();
+        if(usuarioService.existeNickname(usuario.getNickname()))
+            errores.put("nickname","El nickname ya existe, prueba con otro.");
+        if(usuarioService.existeDNI(usuario.getDni()))
+            errores.put("dni","El dni ya existe, prueba con otro.");
+        if(usuarioService.existeTelefono(usuario.getTlf()))
+            errores.put("tlf","El teléfono ya existe, prueba con otro.");
+        if(usuarioService.existeEmail(usuario.getEmail()))
+            errores.put("email","El email ya existe, prueba con otro.");
+        if (result.hasErrors() || !errores.isEmpty()) {
+            result.getFieldErrors().forEach(error -> errores.put(error.getField(), error.getDefaultMessage()));
+            // No seguimos: devolvemos directamente los errores
+            return ResponseEntity.badRequest().body(errores);
         }
+
+        // Solo si NO hay errores, se guarda el usuario
+        Usuario creado = usuarioService.addUser(usuario);
+        return ResponseEntity.ok(creado);
     }
 
-    //Actualizar usuario
     @PutMapping
-    public ResponseEntity<String> actualizarCliente(@RequestBody @Valid Usuario nuevoUsuario) {
-        boolean actualizado = usuarioService.actualizarUsuario(nuevoUsuario);
-        if (actualizado) {
-            return ResponseEntity.ok("Usuario actualizado con éxito");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+    public ResponseEntity<?> updateUsuario(@Valid @RequestBody Usuario usuario, BindingResult result) throws ExecutionException, InterruptedException {
+        if (result.hasErrors()) {
+            Map<String, String> errores = new HashMap<>();
+            result.getFieldErrors().forEach(error -> errores.put(error.getField(), error.getDefaultMessage()));
+            // No seguimos: devolvemos directamente los errores
+            return ResponseEntity.badRequest().body(errores);
         }
+
+        // Solo si NO hay errores, se guarda el usuario
+        Usuario actualizado = usuarioService.updateUser(usuario);
+        return ResponseEntity.ok(actualizado);
     }
 
-    //Eliminar un usuario por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarUsuario(@PathVariable int id) {
-        boolean eliminado = usuarioService.eliminarUsuario(id);
+    public ResponseEntity<String> eliminarUsuario(@PathVariable String id) {
+        boolean eliminado = usuarioService.deleteUser(id);
 
         if (eliminado) {
             return ResponseEntity.ok("Usuario eliminado con éxito");
@@ -79,17 +86,12 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> validarLogin(@RequestBody @Valid LoginRequest loginRequest) {
-        Usuario usuario = new Usuario();
-        usuario.setNickname(loginRequest.getNickname());
-        usuario.setPassword(loginRequest.getPassword());
-
-        if(usuarioService.validarLogin(usuario)) {
+    public ResponseEntity<String> validarLogin(@RequestBody LoginRequest loginRequest) throws ExecutionException, InterruptedException {
+        if(usuarioService.validarLogin(loginRequest)) {
             return ResponseEntity.ok("Usuario logueado");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuario no logueado");
         }
     }
-
 
 }
