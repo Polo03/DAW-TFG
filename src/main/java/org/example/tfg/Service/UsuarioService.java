@@ -129,13 +129,23 @@ public class UsuarioService {
     }
 
     public boolean validarLogin(LoginRequest loginRequest) throws ExecutionException, InterruptedException {
-        List<Usuario> usuarios = getAllUsers();
-        for (Usuario u : usuarios){
-            if(u.getNickname().equals(loginRequest.getNickname()) && u.getPassword().equals(loginRequest.getPassword()))
-                return true;
+        if (loginRequest.getNickname() == null || loginRequest.getPassword() == null) {
+            throw new IllegalArgumentException("El nickname y la contraseña no pueden ser nulos.");
         }
+
+        List<Usuario> usuarios = getAllUsers();
+
+        for (Usuario u : usuarios) {
+            if (u.getNickname() != null && u.getPassword() != null &&
+                    u.getNickname().equals(loginRequest.getNickname()) &&
+                    u.getPassword().equals(loginRequest.getPassword())) {
+                return true;
+            }
+        }
+
         return false;
     }
+
 
     public boolean existeNickname(String nickname) throws ExecutionException, InterruptedException {
         List<Usuario> usuarios = getAllUsers();

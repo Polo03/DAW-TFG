@@ -3,13 +3,16 @@ package org.example.tfg;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Objects;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -18,25 +21,27 @@ import java.io.InputStream;
 @EnableConfigurationProperties
 public class TfgApplication {
 
-    @Value("${firebase.database.url}")
-    private String firebaseDatabaseUrl;
+    public static void main(String[] args) throws IOException {
 
-    @Value("${firebase.config.path}")
-    private String firebaseConfigPath;
+        // Cargar el archivo de credenciales de Firebase desde resources
+        ClassPathResource resource = new ClassPathResource("eatfit-firebase.json");
 
-    public static void main(String[] args) {
+        try (InputStream serviceAccount = resource.getInputStream()) {
+
+            // Configurar Firebase con las credenciales
+            FirebaseOptions options = FirebaseOptions.builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setDatabaseUrl("https://eatfit-137a8-default-rtdb.firebaseio.com")
+                    .build();
+
+            // Inicializar Firebase solo si no está inicializado
+            if (FirebaseApp.getApps().isEmpty()) {
+                FirebaseApp.initializeApp(options);
+            }
+        }
+
+        // Arrancar la aplicación de Spring Boot
         SpringApplication.run(TfgApplication.class, args);
     }
 
-    @Bean
-    public FirebaseApp firebaseApp() throws IOException {
-        InputStream serviceAccount = TfgApplication.class.getResourceAsStream("/eatfit-firebase.json");
-
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl(firebaseDatabaseUrl)
-                .build();
-
-        return FirebaseApp.initializeApp(options);
-    }
 }
