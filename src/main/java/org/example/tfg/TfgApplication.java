@@ -24,7 +24,7 @@ public class TfgApplication {
     public static void main(String[] args) throws IOException {
 
         // Cargar el archivo de credenciales de Firebase desde resources
-        ClassPathResource resource = new ClassPathResource("eatfit-firebase.json");
+        ClassPathResource resource = new ClassPathResource("eatfit.json");
 
         try (InputStream serviceAccount = resource.getInputStream()) {
 
