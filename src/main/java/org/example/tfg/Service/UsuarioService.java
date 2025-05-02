@@ -1,21 +1,47 @@
 package org.example.tfg.Service;
 
 import com.google.api.core.ApiFuture;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 import org.example.tfg.Dto.LoginRequest;
 import org.example.tfg.Dto.Usuario;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
 public class UsuarioService {
 
+    public UsuarioService() {
+        initFirebase();
+    }
+
+    private void initFirebase() {
+        if (FirebaseApp.getApps().isEmpty()) {
+            try {
+                ClassPathResource resource = new ClassPathResource("eatfit.json");
+                InputStream serviceAccount = resource.getInputStream();
+
+                FirebaseOptions options = new FirebaseOptions.Builder()
+                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                        .build();
+
+                FirebaseApp.initializeApp(options);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // Aquí sigue todo tu código existente
     public List<Usuario> getAllUsers() throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
 
@@ -31,6 +57,7 @@ public class UsuarioService {
 
         return usuarios;
     }
+
 
     public Usuario getUserById(String id) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();

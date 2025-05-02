@@ -23,24 +23,6 @@ public class TfgApplication {
 
     public static void main(String[] args) throws IOException {
 
-        // Cargar el archivo de credenciales de Firebase desde resources
-        ClassPathResource resource = new ClassPathResource("eatfit.json");
-
-        try (InputStream serviceAccount = resource.getInputStream()) {
-
-            // Configurar Firebase con las credenciales
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setDatabaseUrl("https://eatfit-137a8-default-rtdb.firebaseio.com")
-                    .build();
-
-            // Inicializar Firebase solo si no está inicializado
-            if (FirebaseApp.getApps().isEmpty()) {
-                FirebaseApp.initializeApp(options);
-            }
-        }
-
-        // Arrancar la aplicación de Spring Boot
         SpringApplication.run(TfgApplication.class, args);
     }
 
