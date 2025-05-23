@@ -20,27 +20,6 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class ForoService {
 
-    public ForoService() {
-        initFirebase();
-    }
-
-    private void initFirebase() {
-        if (FirebaseApp.getApps().isEmpty()) {
-            try {
-                ClassPathResource resource = new ClassPathResource("eatfit.json");
-                InputStream serviceAccount = resource.getInputStream();
-
-                FirebaseOptions options = new FirebaseOptions.Builder()
-                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                        .build();
-
-                FirebaseApp.initializeApp(options);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     // Aquí sigue todo tu código existente
     public List<Foro> getAllForo() throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();

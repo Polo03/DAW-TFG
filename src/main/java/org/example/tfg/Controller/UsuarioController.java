@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -86,18 +85,13 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> validarLogin(@RequestBody LoginRequest loginRequest) {
-        try {
-            if (usuarioService.validarLogin(loginRequest)) {
-                return ResponseEntity.ok("Usuario logueado");
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuario no logueado");
-            }
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace(); // Para ver el error en consola
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno al intentar loguear");
+    public ResponseEntity<?> validarLogin(@RequestBody LoginRequest loginRequest) throws ExecutionException, InterruptedException {
+        Usuario usuario = usuarioService.validarLogin(loginRequest);
+
+        if (usuario != null) {
+            return ResponseEntity.ok(usuario); // Devuelve el objeto Usuario completo
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
         }
     }
 

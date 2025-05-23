@@ -33,4 +33,4 @@ build/
 .vscode/
 
 # Ignorar JSON específico en resources
-src/main/resources/eatfit-137a8-firebase-adminsdk-fbsvc-289aa4b1a3.json
+src/main/resources/eatfit-137a8-firebase-adminsdk-fbsvc-289aa4b1a3.jsoneatfit-137a8-firebase-adminsdk-fbsvc-38cca39cf7.json

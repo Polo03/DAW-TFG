@@ -24,9 +24,9 @@ public class FirebaseConfig {
     @PostConstruct
     public void initialize() {
         try (InputStream serviceAccount = getClass().getClassLoader()
-                .getResourceAsStream("eatfit-137a8-firebase-adminsdk-fbsvc-289aa4b1a3.json")) {
+                .getResourceAsStream("eatfit-137a8-firebase-adminsdk-fbsvc-38cca39cf7.json")) {
             if (serviceAccount == null) {
-                throw new FileNotFoundException("Archivo eatfit-137a8-firebase-adminsdk-fbsvc-289aa4b1a3.json no encontrado");
+                throw new FileNotFoundException("Archivo eatfit-137a8-firebase-adminsdk-fbsvc-38cca39cf7.json no encontrado");
             }
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))

@@ -7,8 +7,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 import org.example.tfg.Dto.Dieta;
-import org.example.tfg.Dto.LoginRequest;
-import org.example.tfg.Dto.Usuario;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -20,26 +18,6 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 public class DietaService {
-    public DietaService() {
-        initFirebase();
-    }
-
-    private void initFirebase() {
-        if (FirebaseApp.getApps().isEmpty()) {
-            try {
-                ClassPathResource resource = new ClassPathResource("eatfit.json");
-                InputStream serviceAccount = resource.getInputStream();
-
-                FirebaseOptions options = new FirebaseOptions.Builder()
-                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                        .build();
-
-                FirebaseApp.initializeApp(options);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     // Aquí sigue todo tu código existente
     public List<Dieta> getAllDietas() throws ExecutionException, InterruptedException {

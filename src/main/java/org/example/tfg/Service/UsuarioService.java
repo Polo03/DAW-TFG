@@ -112,7 +112,7 @@ public class UsuarioService {
         return String.valueOf(maxId + 1);
     }
 
-    public boolean validarLogin(LoginRequest loginRequest) throws ExecutionException, InterruptedException {
+    public Usuario validarLogin(LoginRequest loginRequest) throws ExecutionException, InterruptedException {
         if (loginRequest.getNickname() == null || loginRequest.getPassword() == null) {
             throw new IllegalArgumentException("El nickname y la contraseña no pueden ser nulos.");
         }
@@ -122,11 +122,11 @@ public class UsuarioService {
             if (u.getNickname() != null && u.getPassword() != null &&
                     u.getNickname().equals(loginRequest.getNickname()) &&
                     u.getPassword().equals(loginRequest.getPassword())) {
-                return true;
+                return u;
             }
         }
 
-        return false;
+        return null;
     }
 
     public boolean existeNickname(String nickname) throws ExecutionException, InterruptedException {
