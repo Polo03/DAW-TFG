@@ -23,7 +23,6 @@ import java.util.concurrent.ExecutionException;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/foro")
-@CacheConfig(cacheNames = {"foro"})
 public class ForoController {
     @Autowired
     private ForoService foroService;
@@ -34,7 +33,6 @@ public class ForoController {
     }
 
     @GetMapping("/{id}")
-    @Cacheable(value = "foro", key = "#id")
     public Foro getForoById(@PathVariable String id) throws ExecutionException, InterruptedException {
         return foroService.getForoById(id);
     }

@@ -23,7 +23,6 @@ import java.util.concurrent.ExecutionException;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/cuestionario")
-@CacheConfig(cacheNames = {"cuestionario"})
 public class CuestionarioController {
 
     @Autowired
@@ -35,7 +34,6 @@ public class CuestionarioController {
     }
 
     @GetMapping("/{id}")
-    @Cacheable(value = "cuestionario", key = "#id")
     public Cuestionario getCuestionarioById(@PathVariable String id) throws ExecutionException, InterruptedException {
         return cuestionarioService.getCuestionarioById(id);
     }

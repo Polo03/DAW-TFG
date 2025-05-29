@@ -21,7 +21,6 @@ import java.util.concurrent.ExecutionException;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/dietas")
-@CacheConfig(cacheNames = {"dietas"})
 public class DietaController {
     @Autowired
     private DietaService dietaService;
@@ -32,7 +31,6 @@ public class DietaController {
     }
 
     @GetMapping("/{id}")
-    @Cacheable(value = "dietas", key = "#id")
     public Dieta getDietaById(@PathVariable String id) throws ExecutionException, InterruptedException {
         return dietaService.getDietaById(id);
     }
