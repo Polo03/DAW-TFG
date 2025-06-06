@@ -93,4 +93,21 @@ public class UsuarioController {
         }
     }
 
+    @PutMapping("{id}/actualizar-premium")
+    public ResponseEntity<?> actualizarPremium(@PathVariable String id, @RequestBody Map<String, String> body) {
+        try {
+            String plan = body.get("premium");
+            Usuario usuarioActualizado = usuarioService.actualizarPlanPremium(id, plan);
+
+            if (usuarioActualizado == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+            }
+
+            return ResponseEntity.ok(usuarioActualizado);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar el usuario");
+        }
+    }
+
+
 }

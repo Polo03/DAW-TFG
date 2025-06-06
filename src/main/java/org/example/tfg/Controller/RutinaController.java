@@ -2,14 +2,10 @@ package org.example.tfg.Controller;
 
 import jakarta.validation.Valid;
 import org.example.tfg.Dto.Alimento;
-import org.example.tfg.Dto.Dieta;
-import org.example.tfg.Dto.Foro;
+import org.example.tfg.Dto.Rutina;
 import org.example.tfg.Service.AlimentoService;
-import org.example.tfg.Service.DietaService;
-import org.example.tfg.Service.ForoService;
+import org.example.tfg.Service.RutinaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -22,23 +18,24 @@ import java.util.concurrent.ExecutionException;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/api/foro")
-public class ForoController {
+@RequestMapping("/api/rutinas")
+public class RutinaController {
+
     @Autowired
-    private ForoService foroService;
+    private RutinaService rutinaService;
 
     @GetMapping()
-    public List<Foro> getAllForo() throws ExecutionException, InterruptedException {
-        return foroService.getAllForo();
+    public List<Rutina> getAllRutinas() throws ExecutionException, InterruptedException {
+        return rutinaService.getAllRutinas();
     }
 
-    @GetMapping("/{id}")
-    public Foro getForoById(@PathVariable String id) throws ExecutionException, InterruptedException {
-        return foroService.getForoById(id);
+    @GetMapping("/{nombre}")
+    public Rutina getRutinaById(@PathVariable String nombre) throws ExecutionException, InterruptedException {
+        return rutinaService.getRutinaById(nombre);
     }
 
     @PostMapping
-    public ResponseEntity<?> addForo(@Valid @RequestBody Foro foro, BindingResult result) throws ExecutionException, InterruptedException {
+    public ResponseEntity<?> addRutina(@Valid @RequestBody Rutina rutina, BindingResult result) throws ExecutionException, InterruptedException {
         Map<String, String> errores = new HashMap<>();
         if (result.hasErrors() || !errores.isEmpty()) {
             result.getFieldErrors().forEach(error -> errores.put(error.getField(), error.getDefaultMessage()));
@@ -47,13 +44,12 @@ public class ForoController {
         }
 
         // Solo si NO hay errores, se guarda el usuario
-        foro.setRespuesta("");
-        Foro creado = foroService.addForo(foro);
+        Rutina creado = rutinaService.addRutina(rutina);
         return ResponseEntity.ok(creado);
     }
 
     @PutMapping
-    public ResponseEntity<?> updateForo(@Valid @RequestBody Foro foro, BindingResult result) throws ExecutionException, InterruptedException {
+    public ResponseEntity<?> updateRutina(@Valid @RequestBody Rutina rutina, BindingResult result) throws ExecutionException, InterruptedException {
         if (result.hasErrors()) {
             Map<String, String> errores = new HashMap<>();
             result.getFieldErrors().forEach(error -> errores.put(error.getField(), error.getDefaultMessage()));
@@ -62,18 +58,19 @@ public class ForoController {
         }
 
         // Solo si NO hay errores, se guarda el usuario
-        Foro actualizado = foroService.updateForo(foro);
+        Rutina actualizado =rutinaService.updateRutina(rutina);
         return ResponseEntity.ok(actualizado);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarForo(@PathVariable String id) {
-        boolean eliminado = foroService.deleteForo(id);
+    @DeleteMapping("/{nombre}")
+    public ResponseEntity<String> eliminarRutina(@PathVariable String nombre) {
+        boolean eliminado = rutinaService.deleteRutina(nombre);
 
         if (eliminado) {
-            return ResponseEntity.ok("Pregunta eliminada con éxito");
+            return ResponseEntity.ok("Rutina eliminado con éxito");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pregunta no encontrada");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rutina no encontrado");
         }
     }
+
 }

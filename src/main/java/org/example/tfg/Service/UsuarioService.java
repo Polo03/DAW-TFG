@@ -116,8 +116,8 @@ public class UsuarioService {
         if (loginRequest.getNickname() == null || loginRequest.getPassword() == null) {
             throw new IllegalArgumentException("El nickname y la contraseña no pueden ser nulos.");
         }
-
         List<Usuario> usuarios = getAllUsers();
+
         for (Usuario u : usuarios) {
             if (u.getNickname() != null && u.getPassword() != null &&
                     u.getNickname().equals(loginRequest.getNickname()) &&
@@ -168,4 +168,26 @@ public class UsuarioService {
         }
         return false;
     }
+    public Usuario actualizarPlanPremium(String usuarioId, String nuevoPlan) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+
+        DocumentReference usuarioDoc = dbFirestore.collection("usuarios").document(usuarioId);
+
+        // Actualizamos solo el campo "plan" (o el campo que uses para el tipo de plan)
+        ApiFuture<WriteResult> future = usuarioDoc.update("premium", nuevoPlan);
+
+        future.get(); // Espera a que se complete la actualización
+
+        // Opcional: recuperar el usuario actualizado para devolverlo
+        ApiFuture<DocumentSnapshot> snapshotFuture = usuarioDoc.get();
+        DocumentSnapshot snapshot = snapshotFuture.get();
+
+        if (snapshot.exists()) {
+            Usuario usuarioActualizado = snapshot.toObject(Usuario.class);
+            return usuarioActualizado;
+        } else {
+            return null; // o lanza excepción si no existe
+        }
+    }
+
 }

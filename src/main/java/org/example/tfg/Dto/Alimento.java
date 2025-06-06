@@ -24,6 +24,8 @@ public class Alimento {
 
     private String cantidad;
 
+    private String imagen;
+
     public String getId() {
         return id;
     }
@@ -54,5 +56,13 @@ public class Alimento {
 
     public void setCantidad(String cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 }

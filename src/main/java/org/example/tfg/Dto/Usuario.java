@@ -63,8 +63,7 @@ public class Usuario {
     @Size(max = 100)
     private String direccion;
 
-    @Column(nullable = false)
-    private Boolean premium = false;
+    private String premium = "0";
 
     @Pattern(regexp = "^(administrador|normal)$", message = "El tipo de usuario debe ser 'administrador' o 'normal'")
     @Column(nullable = false, length = 20)
@@ -166,11 +165,11 @@ public class Usuario {
         this.direccion = direccion;
     }
 
-    public Boolean getPremium() {
+    public String getPremium() {
         return premium;
     }
 
-    public void setPremium(Boolean premium) {
+    public void setPremium(String premium) {
         this.premium = premium;
     }
 
