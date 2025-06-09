@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/rutinas")
 public class RutinaController {
 

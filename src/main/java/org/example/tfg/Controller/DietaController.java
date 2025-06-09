@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/dietas")
 public class DietaController {
     @Autowired
